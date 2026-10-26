@@ -1,6 +1,6 @@
 # Security policy
 
-The latest `main` branch is the only supported version during the initial 0.1 release.
+The latest `main` branch is the only supported version during the initial 0.2 release.
 There are no production or live-execution support guarantees.
 
 Report security issues through GitHub's **Security → Report a vulnerability** if private
@@ -24,3 +24,8 @@ Paper risk controls are simulations, not custody or loss protection. The in-memo
 not durable and does not coordinate across processes. Review sessions, costs and timestamps;
 missing/incomplete quotes or calendars must fail closed. Do not add live broker write endpoints
 under the guise of testing a data adapter.
+
+Research exports and RSS content remain untrusted. New commands read local files and never
+visit embedded source links or invoke a broker. RSS DTD/entity declarations are rejected.
+Alert/news journals store local events and can contain user-supplied research text; keep
+them outside Git. Durable events do not imply a durable trading account ledger.

@@ -18,13 +18,19 @@ the deterministic engine enforces risk independently of the model.
 | Paper broker | In-memory ledger, whole shares, fee/slippage estimates, partial exits, duplicate protection |
 | Risk | Fresh quotes, explicit session calendar, stop/target, cash reserve, size/exposure/loss/entry limits, halt |
 | Research | SMA20, Wilder RSI14, session typical-price VWAP, five-minute opening range |
-| Claude Code / Codex | Repo-local analysis and paper trading skills |
+| Scanner / entry timing | Supplied-universe filters, ORB signals, stop/target paper proposals |
+| News | Timestamped announcement digest, keyword tags, local RSS import, optional dedup journal |
+| Historical replay | Next-open ORB replay, fees/slippage, gaps, seeded historical P&L resampling |
+| Alerts | Quote/time conditions with durable local SQLite events; no outbound messaging |
+| Earnings / disclosures | Comparable financial periods and public promoter/director filing tracking |
+| Claude Code / Codex | Repo-local skills for all research workflows and paper execution |
 | Upstox / FYERS / Angel One | Adapter placeholders and tracked integration issues; not functional yet |
 
 This is an initial research release, not a production trading system or an autonomous AI trader.
 It does not call an LLM API: bring Claude Code or Codex, or use Python directly.
-It does not include all eleven upstream tools; see the [feature comparison](docs/upstream-feature-map.md)
-for implemented equivalents and missing research workflows.
+It now provides Indian-market counterparts for all eleven upstream workflow roles. These are
+original implementations with different scope and data requirements, not ports or exact feature
+parity. See the [feature comparison](docs/upstream-feature-map.md) for the boundaries.
 
 ## Quick start
 
@@ -56,6 +62,13 @@ with `end,open,high,low,close,volume` columns. `end` is the candle's **completio
 with an offset. Do not label an open candle as complete. Indicators exclude bars after `--as-of`;
 insufficient history yields null values. Zero-volume index data has no VWAP. The opening range
 requires the three five-minute candles ending at 09:20, 09:25 and 09:30 IST.
+
+## Research workflows
+
+For scanner, news, entry timing, replay, alerts, earnings and disclosure commands, see the
+[research tools guide](docs/research-tools.md). It includes runnable synthetic inputs,
+schemas and observation-time rules. These workflows use supplied exports; automatic
+exchange news/filing ingestion is not included.
 
 ## Zerodha first
 
@@ -110,7 +123,8 @@ Unknown dates fail closed. No holiday list is guessed; special sessions need exp
 
 Call `engine.manage(quote, now)` regularly for **each** open instrument to simulate stop, target
 or time exits. It acts on observed quotes and cannot operate while your process is stopped.
-There is no daemon, durable ledger, order book, liquidity model, automatic recovery or backtester.
+There is no daemon, durable trading ledger, order book, liquidity model or automatic recovery.
+The separate research replay tool simulates historical ORB sessions; it is not a portfolio backtester.
 State and duplicate protection exist only within one process. Do not split an account across brokers
 or restart and assume earlier limits are preserved. The demo fee/slippage model is illustrative;
 it does not calculate actual Indian brokerage, STT, GST, exchange charges, stamp duty or taxes.
@@ -121,8 +135,9 @@ The same original skills are available in `.claude/skills/` for Claude Code and 
 for Codex. Canonical editable sources live in `skills/`; run `python scripts/sync_skills.py` after
 editing them. Restart/reload your agent session to discover newly installed skills.
 
-- Claude Code: `/india-market-analysis` and `/india-paper-trading`.
-- Codex: `$india-market-analysis` and `$india-paper-trading`.
+- Claude Code: `/india-market-analysis`, `/india-paper-trading`, `/india-scanner`, `/india-news`,
+  `/india-entry`, `/india-replay`, `/india-alerts`, `/india-earnings`, `/india-disclosures`.
+- Codex: the same names with a `$` prefix, for example `$india-scanner`.
 
 Example: “Use india-market-analysis to analyze examples/candles.csv for NIFTY 50 as of
 2026-10-26 11:00 IST. Explain missing data and assumptions.”

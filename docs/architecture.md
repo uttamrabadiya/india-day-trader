@@ -32,3 +32,10 @@ Market gaps, process failures and cost/model errors can exceed configured risk b
 
 Future work: durable transactional ledger, session ingestion per exchange, data quality monitoring,
 liquidity-aware replay and adapter integrations. These require separate designs and tests.
+
+Version 0.2 research modules are independent of submission: `scanner`, `entry`, `news`,
+`replay`, `filings` and `alerts`, with shared normalized inputs in `research_io` and CLI
+routing in `research_cli`. Publication and first-observation timestamps bound available
+filing/news revisions. Replay uses signal-close/next-open chronology and explicit
+intrabar assumptions; its research sizing model is separate from the paper risk policy.
+The SQLite event journal stores local alert/news events only, not trading positions.

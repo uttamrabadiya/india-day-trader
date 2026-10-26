@@ -7,6 +7,7 @@ from datetime import date, datetime
 from decimal import Decimal
 from pathlib import Path
 
+from . import research_cli
 from .analysis import analyze
 from .brokers.paper import PaperBroker
 from .calendar import Session, TradingCalendar
@@ -51,6 +52,7 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Indian equity analysis and paper-only toolkit")
     commands = parser.add_subparsers(dest="command", required=True)
     commands.add_parser("demo", help="Run a synthetic offline paper session")
+    research_cli.register(commands)
     report = commands.add_parser("analyze", help="Analyze completed candles from a CSV")
     report.add_argument("--csv", type=Path, required=True)
     report.add_argument("--exchange", choices=[e.value for e in Exchange], default="NSE")
@@ -61,6 +63,9 @@ def main(argv: list[str] | None = None) -> int:
     try:
         if args.command == "demo":
             result = demo()
+        elif args.command in (*research_cli.COMMANDS, "import-rss"):
+            result = research_cli.run(args)
+            result["input_file"] = str(args.rss if args.command == "import-rss" else args.input)
         else:
             with args.csv.open(newline="", encoding="utf-8") as handle:
                 bars = tuple(
@@ -81,7 +86,7 @@ def main(argv: list[str] | None = None) -> int:
             )
         print(json.dumps(result, indent=2))
         return 0
-    except (ValueError, OSError, KeyError) as exc:
+    except (ValueError, OSError, KeyError, TypeError) as exc:
         parser.exit(2, f"error: {exc}\n")
 
 

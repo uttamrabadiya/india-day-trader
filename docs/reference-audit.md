@@ -36,3 +36,12 @@ ledger, risk enforcement and model-neutral skills differ substantially. Preserve
 of Jake Schincariol's inspiration without implying affiliation. Do not copy upstream fixture data
 or US-specific legal, tax or regulatory claims. Broker data access and any future live-execution
 proposal require their own current official documentation and separate review.
+
+## Version 0.2 follow-up
+
+The remaining upstream workflow roles now have original Indian-market counterparts:
+supplied-universe scanning, news/RSS digest, ORB entry timing, historical replay and
+resampling, durable local alerts, comparable earnings and public promoter/director
+disclosures. No upstream implementation, prompts or fixtures were incorporated.
+Attribution remains in ACKNOWLEDGEMENTS.md and the feature map. The disclosure tracker
+uses a different Indian filing framework; the replay makes no forward-probability claim.

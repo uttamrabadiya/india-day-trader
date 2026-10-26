@@ -27,4 +27,6 @@ jobs:
           python -m pip install --force-reinstall dist/*.whl
           cd "$RUNNER_TEMP"
           india-day-trader demo
+          india-day-trader scan --input "$GITHUB_WORKSPACE/examples/research.json" --as-of '2026-10-26T10:00:00+05:30'
+          india-day-trader replay --input "$GITHUB_WORKSPACE/examples/research.json" --instrument NSE:DEMO --as-of '2026-10-26T15:30:00+05:30' --simulations 10
           python -c 'from india_day_trader import __version__; print(__version__)'
